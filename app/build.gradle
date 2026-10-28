@@ -1,0 +1,22 @@
+plugins { id 'com.android.application' }
+def code = (System.getenv('VERSION_CODE') ?: '1').toInteger()
+def repo = System.getenv('GITHUB_REPOSITORY') ?: 'OWNER/REPO'
+android {
+    namespace 'com.elliotheng.lastconvoy'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'com.elliotheng.lastconvoy'
+        minSdk 24
+        targetSdk 34
+        versionCode code
+        versionName "1.${code}"
+        buildConfigField 'String', 'UPDATE_BASE', "\"https://raw.githubusercontent.com/${repo}/main/updates/\""
+        buildConfigField 'String', 'APK_URL', "\"https://github.com/${repo}/releases/latest/download/last-convoy.apk\""
+    }
+    buildFeatures { buildConfig true }
+    signingConfigs {
+        release { storeFile file('release.keystore'); storePassword 'lastconvoy-store'; keyAlias 'lastconvoy'; keyPassword 'lastconvoy-store' }
+    }
+    buildTypes { release { signingConfig signingConfigs.release; minifyEnabled false } }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
